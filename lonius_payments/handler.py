@@ -124,3 +124,5 @@ def simulate_tx(*args, **kwargs):
     frappe.local.response.update(response)
 def test_existence():
     print("I exist....")
+
+#bench new-site dev.lonius.com --admin-password 'velo@2020' --mariadb-root-username erpnext --mariadb-root-password 'velo@2020'
