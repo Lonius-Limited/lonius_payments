@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include lonius_payments *.css
+recursive-include lonius_payments *.csv
+recursive-include lonius_payments *.html
+recursive-include lonius_payments *.ico
+recursive-include lonius_payments *.js
+recursive-include lonius_payments *.json
+recursive-include lonius_payments *.md
+recursive-include lonius_payments *.png
+recursive-include lonius_payments *.py
+recursive-include lonius_payments *.svg
+recursive-include lonius_payments *.txt
+recursive-exclude lonius_payments *.pyc
