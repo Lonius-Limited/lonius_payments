@@ -35,8 +35,8 @@ def register_urls():
     options = {
         "ShortCode": short_code,
         "ResponseType": "Completed",
-        "ConfirmationURL": "https://lonius.co.ke/api/method/facility_management.handler.confirm",
-        "ValidationURL": "https://lonius.co.ke/api/method/facility_management.handler.validate"
+        "ConfirmationURL": "https://lonius.co.ke/api/method/lonius_payments.handler.confirm",
+        "ValidationURL": "https://lonius.co.ke/api/method/lonius_payments.handler.validate"
     }
     response = requests.post(api_url, json=options, headers=headers)
     response = json.loads(response.text)
