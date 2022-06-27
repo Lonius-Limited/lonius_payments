@@ -4,10 +4,10 @@ import requests
 import json
 # short_code = "603021"
 short_code = "3033421"
-prod_consumer_key = "tBEr86TCOKzmVh9wqCqnX3JIXF9zPWef" #"Ku3732GN5Y5zczJ50lrb6uhIkLgolG9A"
-prod_consumer_secret = "02nB1ELBtmA5PJQr" #"OxIKi5blQBqJi40H"
-api_host = "https://sandbox.safaricom.co.ke"
-# api_host = "https://api.safaricom.co.ke"
+prod_consumer_key = "I7j4D3tNG95utx5mDjVk9O0BKxDuofV6"
+prod_consumer_secret = "UW4i7rSl4eiuF8LN"
+# api_host = "https://sandbox.safaricom.co.ke"
+api_host = "https://api.safaricom.co.ke"
 #bench new-site salim.bizpok.com --admin-password 'velo@2020' --mariadb-root-username erpuser --mariadb-root-password 'velo@2020'
 
 #git remote add salimrepo https://dsmwaura:saleem-2013@gitlab.com/dsmwaura/facility_management.git
@@ -105,7 +105,7 @@ def validate(*args, **kwargs):
     return
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def simulate_tx(*args, **kwargs):
 
     access_token = get_access_token()
