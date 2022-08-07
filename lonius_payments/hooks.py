@@ -14,7 +14,7 @@ app_license = "MIT"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/lonius_payments/css/lonius_payments.css"
-# app_include_js = "/assets/lonius_payments/js/lonius_payments.js"
+app_include_js = "/assets/lonius_payments/js/frappe/lonius_payments.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/lonius_payments/css/lonius_payments.css"
@@ -150,6 +150,7 @@ app_license = "MIT"
 
 # User Data Protection
 # --------------------
+# on_session_creation = "lonius_payments.check_subscription"
 
 user_data_fields = [
 	{
