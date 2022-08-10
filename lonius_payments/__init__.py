@@ -72,12 +72,12 @@ def dump_roles(user, roles):
 
 @frappe.whitelist()
 def get_subscription_details(customer):
-    # path = "/api/method/lonius_payments.api.subscription.get_customer_subscription"
+    path = "/api/method/lonius_payments.api.subscription.get_customer_subscription"
     #get_subscription_details
-    path = "/api/method/lonius_payments.api.subscription.get_subscription_details"
+    # path = "/api/method/lonius_payments.api.subscription.get_subscription_details"
     headers = dict(Authorization="token {}:{}".format(API_KEY, API_SECRET))
-    # payload = dict(customer=customer)
-    payload = dict(user="dsmwaura@gmail.com",site_url="ploti.cloud")
+    payload = dict(customer=customer)
+    # payload = dict(user="dsmwaura@gmail.com",site_url="ploti.cloud")
     r = requests.get("{}{}".format(BASE_URL, path), headers=headers, json=payload)
     return r.json()
 
