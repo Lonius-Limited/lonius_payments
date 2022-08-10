@@ -150,7 +150,7 @@ app_include_js = "/assets/lonius_payments/js/frappe/lonius_payments.js"
 
 # User Data Protection
 # --------------------
-# on_session_creation = "lonius_payments.check_subscription"
+on_session_creation = "lonius_payments.check_subscription"
 
 user_data_fields = [
 	{
