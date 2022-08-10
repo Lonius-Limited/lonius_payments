@@ -1,4 +1,5 @@
 from decimal import InvalidContext
+from urllib.parse import uses_relative
 import frappe
 
 from erpnext.selling.doctype.customer.customer import get_customer_outstanding
@@ -23,6 +24,20 @@ def get_subscription_details(user=None, site_url=None):
     if not lonius_client:
         return dict(error="Client file missing")
     customer = lonius_client.get("customer")
+    return get_customer_subscription(customer=customer)
+
+
+@frappe.whitelist()
+def get_customer_subscription(customer=None, user=None, site_url=None):
+    if customer == "" or customer is None:
+        # if not lonius_client:
+        return dict(error="Client ID was not provided")
+    if not frappe.get_value("Customer", customer, "name"):
+        return dict(
+            error="Client ID provided ({}) did not match any records in our database".format(
+                customer
+            )
+        )
     invoices = [
         dict(id=x.get("name"), due_date=x.get("due_date"))
         for x in frappe.get_all(
@@ -55,7 +70,10 @@ def get_subscription_details(user=None, site_url=None):
             page_length=1,
         )
     ]
-    latest_payment_date = recent_payment[0] or date.today().replace(day=1)
+    latest_payment_date = date.today().replace(day=1)
+
+    if len(recent_payment > 1):
+        latest_payment_date = recent_payment[0]
 
     collection_account = frappe.get_value(
         "Terms and Conditions", "Lonius Limited Account Details", "terms"
@@ -73,13 +91,19 @@ def get_subscription_details(user=None, site_url=None):
         invoice_items=items,
         balance=balance,
         latest_payment_date=latest_payment_date,
+        grace_period_date=add_days(latest_payment_date, 40),
         collection_account=collection_account,
         exceeded_grace_period=latest_payment_exceeded_grace_period,
-        
     )
-
+    if not user:
+        customer_details.pop("user")
+    if not site_url:
+        customer_details.pop("site_url")
     return customer_details or dict(error="No client details returned")
+
+
 @frappe.whitelist()
 def sample_subscription_details():
-    user, url = "racheal@nakuru.com", "paperless.nakuru.com"
-    return get_subscription_details(user=user, site_url=url)
+    # user, url = "racheal@nakuru.com", "paperless.nakuru.com"
+    customer = "ValueFarm Feeds Limited"
+    return get_customer_subscription(customer=customer)
