@@ -2,22 +2,22 @@ __version__ = "0.0.1"
 
 import frappe
 import requests, json
+from frappe.sessions import Session, clear_sessions, delete_session
+from datetime import datetime, date
+from frappe.utils.data import fmt_money, add_days
 
 
 BASE_URL = "https://lonius.co.ke"
 API_KEY, API_SECRET = "675432cf7ad7c2f", "ab07756950a8a1c"
-message_template = """
-<div class="ql-editor read-mode">
-    <p><strong>Your usage Licence is expired.</strong></p>
-    <p><br></p>
-    <blockquote>Please remit your subscription fee arrears in the account details below to avoid account suspension and
-        data loss.</blockquote>
-    <p><br></p>
-    <p><strong style="color: rgb(161, 0, 0);">INVOICE TO: &nbsp;{}</strong></p>
-    <p><strong style="color: rgb(161, 0, 0);"><u>INVOICE DUE: {}</u></strong></p>
-    {}
-    <p><br></p>
-    {}
+MESSAGE_TEMPLATE = """
+<div class="container">
+    <p><strong>Your account is temporarily locked which means you cannot access your portal to create or approve transactions. This action is supported by {}.</strong></p>
+    
+    
+    <p><strong style="color: rgb(161, 0, 0);">Your Company: &nbsp;<u>{}</u></strong></p>
+
+    <blockquote>If you believe that this message in error, please contact your ERP Implementer on <em style="color:green">info@lonius.co.ke</em> on or before <u>{}</u>, for restoration of your account.</blockquote>
+    
 </div>
 """
 def check_subscription():
@@ -27,59 +27,30 @@ def check_subscription():
         return
     company = get_default_user_company(user) or "-"
     res = get_subscription_details(company)
-    frappe.msgprint(f"{res}")
 
-    # clear_user_roles(user=user)
-    # frappe.throw(
-    #     "<h4> {} </h4> {}".format(frappe.session.user, "-"),
-    #     title="Subscription Expired",
-    #     wide=True,
-    # )
-
-
-def clear_user_roles(user=None):
-    user = user or frappe.session.user
-    if user:
-        doc = frappe.get_doc("User", user)
-        doc.flags.ignore_permissions = 1
-        current_roles = doc.get("roles")
-        dump_roles(user, current_roles)
-        doc.roles = []
-        doc.save()
-
-
-def dump_roles(user, roles):
-    if not roles:
+    if "error" in list(res.keys()):
+        clear_sessions(user, keep_current=False)
+        frappe.throw('{}'.format(res.get("error")), title="Your account is locked", color='red')
         return
-    previous_dumps = frappe.get_all("User Role Dump", filters=dict(user=user))
-    if previous_dumps:
-        role_list = [x.get("name") for x in previous_dumps]
-        role_list.append(
-            "Some Weird Role"
-        )  # Fingers crossed this is not an actual role
-        docnames = tuple(role_list)
-        frappe.db.sql(
-            "DELETE FROM `tabUser Role Dump` WHERE user in {}".format(docnames)
+    balance, last_payment_date = res.get("balance"), res.get("latest_payment_date")
+    latest_payment_date = datetime.strptime(last_payment_date,"%Y-%m-%d")
+    deadline = add_days(latest_payment_date, 40).date()
+    # if float(balance) > 0.0 and deadline < date.today():
+    if float(balance) > 0.0:
+        clear_sessions(user, keep_current=False)
+        msg = MESSAGE_TEMPLATE.format(
+            "<a target=_blank href='{}/toc'>Lonius ERP Terms and Conditions</a>".format(BASE_URL),
+            res.get("customer"),
+            deadline.strftime("%B, %d %Y"),
         )
-    role_to_dump = [x.get("role") for x in roles]
-
-    args = dict(
-        doctype="User Role Dump", user=user, roles=[dict(role=x) for x in role_to_dump]
-    )
-    doc = frappe.get_doc(args)
-    doc.flags.ignore_permissions = 1
-    doc.insert()
-
+        frappe.throw(msg, title="Lonius Usage Alert", wide=True)     
 @frappe.whitelist()
 def get_subscription_details(customer):
     path = "/api/method/lonius_payments.api.subscription.get_customer_subscription"
-    #get_subscription_details
-    # path = "/api/method/lonius_payments.api.subscription.get_subscription_details"
     headers = dict(Authorization="token {}:{}".format(API_KEY, API_SECRET))
     payload = dict(customer=customer)
-    # payload = dict(user="dsmwaura@gmail.com",site_url="ploti.cloud")
     r = requests.get("{}{}".format(BASE_URL, path), headers=headers, json=payload)
-    return r.json()
+    return (r.json()).get("message")
 
 
 def test_connection():
@@ -88,9 +59,11 @@ def test_connection():
     r = requests.get("{}{}".format(BASE_URL, path), headers=headers)
     print(r.json())
 
-
-def ttest_local_conn():
-    pass
 def get_default_user_company(user):
     args = dict(allow="Company", user=user)
     return frappe.get_value("User Permission",args,"for_value")
+
+def alert_logged_in_users():
+    frappe.publish_realtime(event="subscription_expired",message=dict(expired="Yes") ,doctype="BOM",docname="", user=frappe.session.user)
+    # frappe.publish_realtime(event='eval_js', message='alert("{0}")'.format("msg_var"), user="anotheradmin@lonius.co.ke")
+    print("Alerted")
