@@ -73,7 +73,8 @@ def get_customer_subscription(customer=None, user=None, site_url=None):
     latest_payment_date = date.today().replace(day=1)
 
     if len(recent_payment) > 0:
-        latest_payment_date = recent_payment[0]
+        if recent_payment[0]:
+            latest_payment_date = recent_payment[0]
 
     collection_account = frappe.get_value(
         "Terms and Conditions", "Lonius Limited Account Details", "terms"
