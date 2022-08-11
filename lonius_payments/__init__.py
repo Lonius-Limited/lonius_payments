@@ -43,7 +43,7 @@ def check_subscription():
             res.get("customer"),
             deadline.strftime("%B, %d %Y"),
         )
-        frappe.throw(msg, title="Lonius Usage Billing Alert", wide=True)     
+        frappe.throw(msg, title="Lonius Usage Alert", wide=True)     
 @frappe.whitelist()
 def get_subscription_details(customer):
     path = "/api/method/lonius_payments.api.subscription.get_customer_subscription"
