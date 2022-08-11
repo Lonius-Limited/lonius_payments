@@ -30,7 +30,7 @@ def check_subscription():
 
     if "error" in list(res.keys()):
         clear_sessions(user, keep_current=False)
-        frappe.throw('{}'.format(res.get("error")), title="Your account is locked", color='red')
+        frappe.throw('{}'.format(res.get("error")), title="Your account is locked")
         return
     balance, last_payment_date = res.get("balance"), res.get("latest_payment_date")
     latest_payment_date = datetime.strptime(last_payment_date,"%Y-%m-%d")

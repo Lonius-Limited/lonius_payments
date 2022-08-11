@@ -81,7 +81,7 @@ def get_customer_subscription(customer=None, user=None, site_url=None):
     )  # HardCoded
 
     latest_payment_exceeded_grace_period = (
-        add_days(latest_payment_date, 44) < date.today()
+        add_days(latest_payment_date, 40) < date.today()
     )
 
     customer_details = dict(
