@@ -35,8 +35,8 @@ def check_subscription():
     balance, last_payment_date = res.get("balance"), res.get("latest_payment_date")
     latest_payment_date = datetime.strptime(last_payment_date,"%Y-%m-%d")
     deadline = add_days(latest_payment_date, 40).date()
-    # if float(balance) > 0.0 and deadline < date.today():
-    if float(balance) > 0.0:
+    if float(balance) > 0.0 and deadline < date.today():
+    # if float(balance) > 0.0:
         clear_sessions(user, keep_current=False)
         msg = MESSAGE_TEMPLATE.format(
             "<a target=_blank href='{}/toc'>Lonius ERP Terms and Conditions</a>".format(BASE_URL),
