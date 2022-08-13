@@ -14,11 +14,11 @@ app_license = "MIT"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/lonius_payments/css/lonius_payments.css"
-app_include_js = "/assets/lonius_payments/js/frappe/lonius_payments.js"
+app_include_js = ["/assets/lonius_payments/js/frappe/lonius_payments.js"]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/lonius_payments/css/lonius_payments.css"
-# web_include_js = "/assets/lonius_payments/js/lonius_payments.js"
+web_include_js = "templates/includes/account_dashboard.js"
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "lonius_payments/public/scss/website"
