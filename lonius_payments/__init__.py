@@ -51,14 +51,16 @@ def get_subscription_details(customer):
     payload = dict(customer=customer)
     r = requests.get("{}{}".format(BASE_URL, path), headers=headers, json=payload)
     return (r.json()).get("message")
-
-
 def test_connection():
     path = "/api/method/lonius_payments.api.subscription."
     headers = dict(Authorization="token {}:{}".format(API_KEY, API_SECRET))
     r = requests.get("{}{}".format(BASE_URL, path), headers=headers)
     print(r.json())
-
+@frappe.whitelist(allow_guest=True)
+def customer_account_request(user):
+    company = get_default_user_company(user) or '-'
+    res = get_subscription_details(company)
+    return res
 def get_default_user_company(user):
     args = dict(allow="Company", user=user)
     return frappe.get_value("User Permission",args,"for_value")

@@ -103,8 +103,9 @@ def get_customer_subscription(customer=None, user=None, site_url=None):
     return customer_details or dict(error="No client details returned")
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def sample_subscription_details():
     # user, url = "racheal@nakuru.com", "paperless.nakuru.com"
     customer = "ValueFarm Feeds Limited"
     return get_customer_subscription(customer=customer)
+

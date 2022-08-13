@@ -1,0 +1,55 @@
+{% extends "templates/web.html" %}
+
+
+
+{% set title = _("Customer Dashboard") %}
+{% set user = frappe.session.user %}
+{% block page_content %}
+
+
+
+<link href="https://unpkg.com/frappe-datatable@0.0.5/dist/frappe-datatable.min.css" rel="stylesheet">
+
+<section id="top" class="section section-padding-top section-padding-bottom">
+    <div class="container">
+        <div class="section-cta-container">
+            <div class="section-cta">
+                <h2 class="display-4">Get your account statement in seconds</h2>
+                <p class="subtitle">Enter your login ID and click get my statement.</p>
+
+                <br>
+                
+                <div class="input-group mb-3" style="width:70%;margin-left:20%;border:1px solid green;">
+                    <input type="text" class="form-control" id="userid" aria-label="Default"
+                        placeholder="Company email or Customer ID" aria-describedby="inputGroup-sizing-default">
+                </div>
+                <small>Same as your usual login credentials. Only authorized accounts can check for account balance.</small>
+
+                <div class="mt-3">
+                    <br>
+                    <button id="customer_statement" class="btn btn-lg btn-primary">Get my
+                        statement</button>
+                </div>
+            </div>
+            <div class="confetti confetti-1"></div>
+            <div class="confetti confetti-2"></div>
+            <div class="confetti confetti-3"></div></a>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+<script src="https://unpkg.com/sortablejs@1.7.0/Sortable.min.js"></script>
+<script src="https://unpkg.com/clusterize.js@0.18.0/clusterize.min.js"></script>
+<!-- include the lib -->
+<script src="https://unpkg.com/frappe-datatable@0.0.5/dist/frappe-datatable.min.js"></script>
+<script>
+
+    {% include "templates/includes/account_dashboard.js" %}
+</script>
+
+{% endblock %}
